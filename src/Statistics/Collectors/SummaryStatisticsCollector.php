@@ -3,6 +3,7 @@
 namespace Napopravku\LaravelAPM\Statistics\Collectors;
 
 use Illuminate\Support\Arr;
+use Napopravku\LaravelAPM\Snapshotting\Data\Snapshots\TimeSnapshot;
 use Napopravku\LaravelAPM\Snapshotting\Data\SnapshotsCollection;
 use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsCollector;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
@@ -11,8 +12,14 @@ class SummaryStatisticsCollector implements StatisticsCollector
 {
     public function collect(SnapshotsCollection $snapshotsCollection): SummaryStatisticsData
     {
-        $start = (int)Arr::first($snapshotsCollection->getTimeSnapshots());
-        $end   = (int)Arr::last($snapshotsCollection->getTimeSnapshots());
+        /** @var TimeSnapshot|null $startSnapshot */
+        $startSnapshot = Arr::first($snapshotsCollection->getTimeSnapshots());
+
+        /** @var TimeSnapshot|null $endSnapshot */
+        $endSnapshot = Arr::last($snapshotsCollection->getTimeSnapshots());
+
+        $start = $startSnapshot->value() ?? 0.0;
+        $end   = $endSnapshot->value() ?? 0.0;
 
         $maxPeakMemory = max(
             array_column($snapshotsCollection->getPeakMemorySnapshots(), 'bytes')

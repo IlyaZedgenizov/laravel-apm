@@ -6,13 +6,13 @@ use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsData;
 
 class SummaryStatisticsData implements StatisticsData
 {
-    public int $executionTime;
+    public float $executionTime;
 
-    public int $startedAtTimestamp;
+    public float $startedAtTimestamp;
 
     public int $peakMemory;
 
-    public static function create(int $executionTime, int $startedAtTimestamp, int $maxPeakMemory): self
+    public static function create(float $executionTime, float $startedAtTimestamp, int $maxPeakMemory): self
     {
         $instance = new static();
 

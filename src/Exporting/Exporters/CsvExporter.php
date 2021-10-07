@@ -65,7 +65,7 @@ class CsvExporter implements APMExporter
                     $row[] = $scriptInfo->taskName;
                     break;
                 case 'execution_time':
-                    $row[] = TimeFormatter::format($statisticsData->executionTime);
+                    $row[] = TimeFormatter::format((int)$statisticsData->executionTime);
                     break;
                 case 'peak_memory_bytes':
                     $row[] = $statisticsData->peakMemory;
