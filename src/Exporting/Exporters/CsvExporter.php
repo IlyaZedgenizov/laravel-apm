@@ -76,6 +76,11 @@ class CsvExporter implements APMExporter
                 case 'started_at':
                     $row[] = DateFormatter::format($statisticsData->startedAtTimestamp);
                     break;
+                case 'finished_at':
+                    $row[] = DateFormatter::format(
+                        $statisticsData->startedAtTimestamp + $statisticsData->executionTime
+                    );
+                    break;
             }
         }
 
@@ -92,6 +97,7 @@ class CsvExporter implements APMExporter
             'peak_memory_bytes',
             'peak_memory_formatted',
             'started_at',
+            'finished_at',
         ];
     }
 }
