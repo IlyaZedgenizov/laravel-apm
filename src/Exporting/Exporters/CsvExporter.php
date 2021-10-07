@@ -37,7 +37,7 @@ class CsvExporter implements APMExporter
 
         $row = $this->getRow($statisticsData, $scriptInfo);
 
-        $data .= implode($separator, $row) . PHP_EOL;
+        $data .= implode($separator, $row);
 
         $this->storage->store($data);
     }
