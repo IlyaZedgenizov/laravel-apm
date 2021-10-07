@@ -29,7 +29,7 @@ class JobTaskListener
     {
         $this->snapshotCollector->takeDefaults('stop');
 
-        $scriptInfo = $this->scriptInfoCreator->create($event->job->getName(), TaskTypes::JOB);
+        $scriptInfo = $this->scriptInfoCreator->create($event->job->resolveName(), TaskTypes::JOB);
 
         event(
             new SnapshottingFinished($this->snapshotCollector->getSnapshotsCollection(), $scriptInfo)
