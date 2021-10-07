@@ -18,4 +18,12 @@ class TaskTypes
 
     // Not implemented yet
     public const DB_QUERY = 5;
+
+    public const DESCRIPTIONS = [
+        self::JOB            => 'job',
+        self::COMMAND        => 'command',
+        self::SCHEDULED_TASK => 'scheduled',
+        self::REQUEST        => 'request',
+        self::DB_QUERY       => 'db_query',
+    ];
 }

@@ -27,10 +27,6 @@ class CsvStorage
 
     public function store(string $data): void
     {
-        if (!$this->exists()) {
-            $this->disk->put($this->filePath, '');
-        }
-
         $this->disk->append($this->filePath, $data);
     }
 

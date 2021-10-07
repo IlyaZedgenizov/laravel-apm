@@ -10,6 +10,7 @@ use Napopravku\LaravelAPM\Formatting\TimeFormatter;
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsData;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
+use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
 class CsvExporter implements APMExporter
 {
@@ -59,7 +60,7 @@ class CsvExporter implements APMExporter
                     $row[] = $scriptInfo->pid;
                     break;
                 case 'task_type':
-                    $row[] = $scriptInfo->taskType;
+                    $row[] = TaskTypes::DESCRIPTIONS[$scriptInfo->taskType];
                     break;
                 case 'task_name':
                     $row[] = $scriptInfo->taskName;
