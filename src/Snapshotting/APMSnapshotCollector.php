@@ -39,13 +39,18 @@ class APMSnapshotCollector
         );
     }
 
-    public function takeDefaults(string $name): void
+    /**
+     * Take snapshots for summary results. Includes timestamp and current peak memory
+     *
+     * @param string $name
+     */
+    public function takeForSummary(string $name): void
     {
-        /** @var bool[] $defaultSnapshottingAvailability */
-        $defaultSnapshottingAvailability = config('apm.default_snapshotting_availability');
+        /** @var bool[] $summarySnapshottingAvailability */
+        $summarySnapshottingAvailability = config('apm.summary_snapshotting_availability');
 
         $availableSnapshotTypes = array_keys(
-            array_filter($defaultSnapshottingAvailability)
+            array_filter($summarySnapshottingAvailability)
         );
 
         $this->takeTime($name);

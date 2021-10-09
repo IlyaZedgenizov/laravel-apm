@@ -4,16 +4,16 @@ namespace Napopravku\LaravelAPM\Snapshotting\Listeners;
 
 use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
-use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsCollector;
+use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
 
 class SnapshottingFinishedListener
 {
-    private StatisticsCollector $statisticsCollector;
+    private APMStatisticsCollector $statisticsCollector;
 
     private APMExporter $exporter;
 
     public function __construct(
-        StatisticsCollector $statisticsCollector,
+        APMStatisticsCollector $statisticsCollector,
         APMExporter $exporter
     ) {
         $this->statisticsCollector = $statisticsCollector;

@@ -22,12 +22,12 @@ class JobTaskListener
 
     public function handleStart(): void
     {
-        $this->snapshotCollector->takeDefaults('start');
+        $this->snapshotCollector->takeForSummary('start');
     }
 
     public function handleStop(JobProcessed $event): void
     {
-        $this->snapshotCollector->takeDefaults('stop');
+        $this->snapshotCollector->takeForSummary('stop');
 
         $scriptInfo = $this->scriptInfoCreator->create($event->job->resolveName(), TaskTypes::JOB);
 

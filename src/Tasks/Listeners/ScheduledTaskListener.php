@@ -22,12 +22,12 @@ class ScheduledTaskListener
 
     public function handleStart(): void
     {
-        $this->snapshotCollector->takeDefaults('start');
+        $this->snapshotCollector->takeForSummary('start');
     }
 
     public function handleStop(ScheduledTaskFinished $event): void
     {
-        $this->snapshotCollector->takeDefaults('stop');
+        $this->snapshotCollector->takeForSummary('stop');
 
         $scriptInfo = $this->scriptInfoCreator->create($event->task->command, TaskTypes::SCHEDULED_TASK);
 

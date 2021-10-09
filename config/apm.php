@@ -5,10 +5,11 @@ use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
 return [
     /*
-     * Snapshots availability matrix when making default tasks snapshotting
+     * Snapshots availability matrix when making tasks snapshotting for summary results
+     * Maybe later, peak cpu usage will be also presented here
      */
-    'default_snapshotting_availability' => [
-        SnapshotTypes::PEAK_MEMORY => env('APM_DEFAULT_SNAPSHOTTING_PEAK_MEMORY', true),
+    'summary_snapshotting_availability' => [
+        SnapshotTypes::PEAK_MEMORY => env('APM_SUMMARY_SNAPSHOTTING_PEAK_MEMORY', true),
     ],
 
     /*

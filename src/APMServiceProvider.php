@@ -18,7 +18,7 @@ use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
 use Napopravku\LaravelAPM\Exporting\Exporters\CsvExporter;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Statistics\Collectors\SummaryStatisticsCollector;
-use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsCollector;
+use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
 use Napopravku\LaravelAPM\Snapshotting\Listeners\SnapshottingFinishedListener;
@@ -48,8 +48,8 @@ class APMServiceProvider extends ServiceProvider
 
         $scriptTypesAvailable = $config->get('apm.tasks_available');
 
-        if(!$this->app->bound(StatisticsCollector::class)) {
-            $this->app->bind(StatisticsCollector::class, SummaryStatisticsCollector::class);
+        if(!$this->app->bound(APMStatisticsCollector::class)) {
+            $this->app->bind(APMStatisticsCollector::class, SummaryStatisticsCollector::class);
         }
 
         if(!$this->app->bound(APMExporter::class)) {

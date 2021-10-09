@@ -2,9 +2,9 @@
 
 namespace Napopravku\LaravelAPM\Statistics\Data;
 
-use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsData;
+use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 
-class SummaryStatisticsData implements StatisticsData
+class SummaryStatisticsData implements APMStatisticsData
 {
     public float $executionTime;
 

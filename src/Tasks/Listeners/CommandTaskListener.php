@@ -22,12 +22,12 @@ class CommandTaskListener
 
     public function handleStart(): void
     {
-        $this->snapshotCollector->takeDefaults('start');
+        $this->snapshotCollector->takeForSummary('start');
     }
 
     public function handleStop(CommandFinished $event): void
     {
-        $this->snapshotCollector->takeDefaults('stop');
+        $this->snapshotCollector->takeForSummary('stop');
 
         $scriptInfo = $this->scriptInfoCreator->create($event->command, TaskTypes::COMMAND);
 

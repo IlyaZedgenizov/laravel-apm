@@ -5,10 +5,10 @@ namespace Napopravku\LaravelAPM\Statistics\Collectors;
 use Illuminate\Support\Arr;
 use Napopravku\LaravelAPM\Snapshotting\Data\Snapshots\TimeSnapshot;
 use Napopravku\LaravelAPM\Snapshotting\Data\SnapshotsCollection;
-use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsCollector;
+use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
 
-class SummaryStatisticsCollector implements StatisticsCollector
+class SummaryStatisticsCollector implements APMStatisticsCollector
 {
     public function collect(SnapshotsCollection $snapshotsCollection): SummaryStatisticsData
     {

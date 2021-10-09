@@ -3,102 +3,44 @@
 namespace Napopravku\LaravelAPM\Exporting\Exporters;
 
 use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
+use Napopravku\LaravelAPM\Exporting\Exporters\Data\CsvRow;
+use Napopravku\LaravelAPM\Exporting\Exporters\DataCreators\CsvRowCreator;
 use Napopravku\LaravelAPM\Exporting\Storage\CsvStorage;
-use Napopravku\LaravelAPM\Formatting\DateFormatter;
-use Napopravku\LaravelAPM\Formatting\MemoryFormatter;
-use Napopravku\LaravelAPM\Formatting\TimeFormatter;
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
-use Napopravku\LaravelAPM\Statistics\Contracts\StatisticsData;
+use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
-use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
 class CsvExporter implements APMExporter
 {
     private CsvStorage $storage;
 
-    public function __construct(CsvStorage $storage)
+    private CsvRowCreator $csvRowCreator;
+
+    public function __construct(CsvStorage $storage, CsvRowCreator $csvRowCreator)
     {
-        $this->storage = $storage;
+        $this->storage       = $storage;
+        $this->csvRowCreator = $csvRowCreator;
     }
 
     /**
      * @param SummaryStatisticsData $statisticsData
      * @param ScriptInfo            $scriptInfo
      */
-    public function export(StatisticsData $statisticsData, ScriptInfo $scriptInfo): void
+    public function export(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): void
     {
         $separator = config('apm.export.csv.separator');
 
         $data = '';
 
         if (!$this->storage->exists()) {
-            $data = implode($separator, $this->getHeader()) . PHP_EOL;
+            $data = CsvRow::getHeaderRowString($separator);
         }
 
-        $row = $this->getRow($statisticsData, $scriptInfo);
-
-        $data .= implode($separator, $row);
+        $data .= $this
+            ->csvRowCreator
+            ->createFromStatisticsAndScriptInfo($statisticsData, $scriptInfo)
+            ->toRowString($separator);
 
         $this->storage->store($data);
-    }
-
-    /**
-     * @param SummaryStatisticsData $statisticsData
-     * @param ScriptInfo            $scriptInfo
-     *
-     * @return array
-     */
-    protected function getRow(StatisticsData $statisticsData, ScriptInfo $scriptInfo): array
-    {
-        $header = $this->getHeader();
-
-        $row = [];
-
-        foreach ($header as $column) {
-            switch ($column) {
-                case 'pid':
-                    $row[] = $scriptInfo->pid;
-                    break;
-                case 'task_type':
-                    $row[] = TaskTypes::DESCRIPTIONS[$scriptInfo->taskType];
-                    break;
-                case 'task_name':
-                    $row[] = $scriptInfo->taskName;
-                    break;
-                case 'execution_time':
-                    $row[] = TimeFormatter::format((int)$statisticsData->executionTime);
-                    break;
-                case 'peak_memory_bytes':
-                    $row[] = $statisticsData->peakMemory;
-                    break;
-                case 'peak_memory_formatted':
-                    $row[] = MemoryFormatter::format($statisticsData->peakMemory);
-                    break;
-                case 'started_at':
-                    $row[] = DateFormatter::format($statisticsData->startedAtTimestamp);
-                    break;
-                case 'finished_at':
-                    $row[] = DateFormatter::format(
-                        $statisticsData->startedAtTimestamp + $statisticsData->executionTime
-                    );
-                    break;
-            }
-        }
-
-        return $row;
-    }
-
-    protected function getHeader(): array
-    {
-        return [
-            'pid',
-            'task_type',
-            'task_name',
-            'execution_time',
-            'peak_memory_bytes',
-            'peak_memory_formatted',
-            'started_at',
-            'finished_at',
-        ];
     }
 }
