@@ -1,6 +1,6 @@
 <?php
 
-namespace Napopravku\LaravelAPM\Exporting\Exporters\Data;
+namespace Napopravku\LaravelAPM\Exporting\Data;
 
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -45,6 +45,6 @@ class CsvRow implements Arrayable
 
     public static function getHeaderRowString(string $separator = ','): string
     {
-        return implode($separator, self::COLUMN_NAMES) . PHP_EOL;
+        return implode($separator, self::COLUMN_NAMES);
     }
 }

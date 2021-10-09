@@ -1,16 +1,13 @@
 <?php
 
-use Napopravku\LaravelAPM\Snapshotting\Enums\SnapshotTypes;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
 return [
     /*
-     * Snapshots availability matrix when making tasks snapshotting for summary results
-     * Maybe later, peak cpu usage will be also presented here
+     * If you have your app running in multiple processes,
+     * apm needs to handle concurrent storage access when saving metrics
      */
-    'summary_snapshotting_availability' => [
-        SnapshotTypes::PEAK_MEMORY => env('APM_SUMMARY_SNAPSHOTTING_PEAK_MEMORY', true),
-    ],
+    'enable_concurrent_safety' => env('APM_ENABLE_CONCURRENT_SAFETY', true),
 
     /*
      * Prod configuration. Locally, turn off scheduler and turn on commands
@@ -35,9 +32,18 @@ return [
 
     'export' => [
         'csv' => [
-            'filename'  => env('APM_CSV_FILENAME', 'apm'),
             'separator' => env('APM_CSV_SEPARATOR', ','),
             'disk'      => env('FILESYSTEM_DRIVER', 'local'),
+
+            /*
+             * Due to current inter-process results storing implementation,
+             * default value depends on APM_ENABLE_CONCURRENT_SAFETY.
+             * See README.md for more information about the implementation
+             */
+            'include_header' => env(
+                'APM_CSV_INCLUDE_HEADER',
+                !env('APM_ENABLE_CONCURRENT_SAFETY', true)
+            ),
         ],
     ],
 

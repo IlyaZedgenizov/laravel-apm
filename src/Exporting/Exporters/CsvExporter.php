@@ -3,8 +3,9 @@
 namespace Napopravku\LaravelAPM\Exporting\Exporters;
 
 use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
-use Napopravku\LaravelAPM\Exporting\Exporters\Data\CsvRow;
-use Napopravku\LaravelAPM\Exporting\Exporters\DataCreators\CsvRowCreator;
+use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
+use Napopravku\LaravelAPM\Exporting\Data\CsvStorageOptions;
+use Napopravku\LaravelAPM\Exporting\DataCreators\CsvRowCreator;
 use Napopravku\LaravelAPM\Exporting\Storage\CsvStorage;
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
@@ -28,12 +29,16 @@ class CsvExporter implements APMExporter
      */
     public function export(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): void
     {
+        $this->storage->initStorage(
+            CsvStorageOptions::create($scriptInfo->pid, config('apm.enable_concurrent_safety'))
+        );
+
         $separator = config('apm.export.csv.separator');
 
         $data = '';
 
-        if (!$this->storage->exists()) {
-            $data = CsvRow::getHeaderRowString($separator);
+        if ($this->shouldStoreHeader()) {
+            $data = CsvRow::getHeaderRowString($separator) . PHP_EOL;
         }
 
         $data .= $this
@@ -42,5 +47,10 @@ class CsvExporter implements APMExporter
             ->toRowString($separator);
 
         $this->storage->store($data);
+    }
+
+    protected function shouldStoreHeader(): bool
+    {
+        return config('apm.export.csv.include_header') && !$this->storage->exists();
     }
 }

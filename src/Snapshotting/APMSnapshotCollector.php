@@ -3,7 +3,6 @@
 namespace Napopravku\LaravelAPM\Snapshotting;
 
 use Napopravku\LaravelAPM\Snapshotting\Data\SnapshotsCollection;
-use Napopravku\LaravelAPM\Snapshotting\Enums\SnapshotTypes;
 use Napopravku\LaravelAPM\Snapshotting\Snapshotters\PeakMemorySnapshotter;
 use Napopravku\LaravelAPM\Snapshotting\Snapshotters\TimeSnapshotter;
 
@@ -46,20 +45,8 @@ class APMSnapshotCollector
      */
     public function takeForSummary(string $name): void
     {
-        /** @var bool[] $summarySnapshottingAvailability */
-        $summarySnapshottingAvailability = config('apm.summary_snapshotting_availability');
-
-        $availableSnapshotTypes = array_keys(
-            array_filter($summarySnapshottingAvailability)
-        );
-
         $this->takeTime($name);
-
-        foreach ($availableSnapshotTypes as $snapshotType) {
-            if (SnapshotTypes::isPeakMemory($snapshotType)) {
-                $this->takePeakMemory($name);
-            }
-        }
+        $this->takePeakMemory($name);
     }
 
     public function getSnapshotsCollection(): SnapshotsCollection

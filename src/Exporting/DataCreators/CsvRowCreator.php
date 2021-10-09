@@ -1,8 +1,8 @@
 <?php
 
-namespace Napopravku\LaravelAPM\Exporting\Exporters\DataCreators;
+namespace Napopravku\LaravelAPM\Exporting\DataCreators;
 
-use Napopravku\LaravelAPM\Exporting\Exporters\Data\CsvRow;
+use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
 use Napopravku\LaravelAPM\Formatting\DateFormatter;
 use Napopravku\LaravelAPM\Formatting\MemoryFormatter;
 use Napopravku\LaravelAPM\Formatting\TimeFormatter;
