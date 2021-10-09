@@ -14,10 +14,10 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
-use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
-use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
-use Napopravku\LaravelAPM\Exporting\Exporters\CsvExporter;
-use Napopravku\LaravelAPM\Exporting\Storage\CsvStorage;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMReportExporter;
+use Napopravku\LaravelAPM\Exporting\Exporters\CsvReportExporter;
+use Napopravku\LaravelAPM\Exporting\Storage\CsvReportStorage;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Statistics\Collectors\SummaryStatisticsCollector;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
@@ -54,12 +54,12 @@ class APMServiceProvider extends ServiceProvider
             $this->app->bind(APMStatisticsCollector::class, SummaryStatisticsCollector::class);
         }
 
-        if(!$this->app->bound(APMExporter::class)) {
-            $this->app->bind(APMExporter::class, CsvExporter::class);
+        if(!$this->app->bound(APMReportExporter::class)) {
+            $this->app->bind(APMReportExporter::class, CsvReportExporter::class);
         }
 
-        if(!$this->app->bound(APMCsvStorage::class)) {
-            $this->app->bind(APMCsvStorage::class, CsvStorage::class);
+        if(!$this->app->bound(APMCsvReportStorage::class)) {
+            $this->app->bind(APMCsvReportStorage::class, CsvReportStorage::class);
         }
 
         $this->app->singleton(APMSnapshotCollector::class);

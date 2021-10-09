@@ -2,7 +2,7 @@
 
 namespace Napopravku\LaravelAPM\Exporting\Data;
 
-class CsvStorageOptions
+class CsvReportStorageOptions
 {
     public bool $enableConcurrentSafety;
 

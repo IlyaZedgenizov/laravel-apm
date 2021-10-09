@@ -2,22 +2,22 @@
 
 namespace Napopravku\LaravelAPM\Exporting\Exporters;
 
-use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
-use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
-use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
-use Napopravku\LaravelAPM\Exporting\Data\CsvStorageOptions;
-use Napopravku\LaravelAPM\Exporting\SimpleFactories\CsvRowFactory;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMReportExporter;
+use Napopravku\LaravelAPM\Exporting\Data\CsvReportRow;
+use Napopravku\LaravelAPM\Exporting\Data\CsvReportStorageOptions;
+use Napopravku\LaravelAPM\Exporting\SimpleFactories\CsvReportRowFactory;
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
 
-class CsvExporter implements APMExporter
+class CsvReportExporter implements APMReportExporter
 {
-    private APMCsvStorage $storage;
+    private APMCsvReportStorage $storage;
 
-    private CsvRowFactory $csvRowFactory;
+    private CsvReportRowFactory $csvRowFactory;
 
-    public function __construct(APMCsvStorage $storage, CsvRowFactory $csvRowFactory)
+    public function __construct(APMCsvReportStorage $storage, CsvReportRowFactory $csvRowFactory)
     {
         $this->storage       = $storage;
         $this->csvRowFactory = $csvRowFactory;
@@ -30,7 +30,7 @@ class CsvExporter implements APMExporter
     public function export(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): void
     {
         $this->storage->initStorage(
-            CsvStorageOptions::create($scriptInfo->pid, config('apm.enable_concurrent_safety'))
+            CsvReportStorageOptions::create($scriptInfo->pid, config('apm.enable_concurrent_safety'))
         );
 
         $separator = config('apm.export.csv.separator');
@@ -38,7 +38,7 @@ class CsvExporter implements APMExporter
         $data = '';
 
         if ($this->shouldStoreHeader()) {
-            $data = CsvRow::getHeaderRowString($separator) . PHP_EOL;
+            $data = CsvReportRow::getHeaderRowString($separator) . PHP_EOL;
         }
 
         $data .= $this

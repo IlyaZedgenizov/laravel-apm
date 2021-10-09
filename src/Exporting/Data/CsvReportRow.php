@@ -4,7 +4,7 @@ namespace Napopravku\LaravelAPM\Exporting\Data;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-class CsvRow implements Arrayable
+class CsvReportRow implements Arrayable
 {
     public const COLUMN_NAMES = [
         'pid',

@@ -6,13 +6,13 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use LogicException;
-use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
-use Napopravku\LaravelAPM\Exporting\Data\CsvStorageOptions;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
+use Napopravku\LaravelAPM\Exporting\Data\CsvReportStorageOptions;
 
 /**
  * Concurrent-safe storage
  */
-class CsvStorage implements APMCsvStorage
+class CsvReportStorage implements APMCsvReportStorage
 {
     private const DIR = 'apm/csv';
 
@@ -22,7 +22,7 @@ class CsvStorage implements APMCsvStorage
 
     private string $filePath;
 
-    public function initStorage(CsvStorageOptions $options): void
+    public function initStorage(CsvReportStorageOptions $options): void
     {
         $this->disk = Storage::disk(config('apm.export.csv.disk'));
 

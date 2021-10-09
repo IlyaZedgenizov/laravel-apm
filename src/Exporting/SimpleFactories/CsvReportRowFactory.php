@@ -2,7 +2,7 @@
 
 namespace Napopravku\LaravelAPM\Exporting\SimpleFactories;
 
-use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
+use Napopravku\LaravelAPM\Exporting\Data\CsvReportRow;
 use Napopravku\LaravelAPM\Formatting\DateFormatter;
 use Napopravku\LaravelAPM\Formatting\MemoryFormatter;
 use Napopravku\LaravelAPM\Formatting\TimeFormatter;
@@ -10,11 +10,11 @@ use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
-class CsvRowFactory
+class CsvReportRowFactory
 {
-    public function fromStatisticsAndScriptInfo(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): CsvRow
+    public function fromStatisticsAndScriptInfo(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): CsvReportRow
     {
-        $row = new CsvRow();
+        $row = new CsvReportRow();
 
         $row->pid         = $scriptInfo->pid;
         $row->taskType    = TaskTypes::DESCRIPTIONS[$scriptInfo->taskType];
