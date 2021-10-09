@@ -6,7 +6,7 @@ use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
 use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
 use Napopravku\LaravelAPM\Exporting\Data\CsvStorageOptions;
-use Napopravku\LaravelAPM\Exporting\DataCreators\CsvRowCreator;
+use Napopravku\LaravelAPM\Exporting\SimpleFactories\CsvRowFactory;
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 use Napopravku\LaravelAPM\Statistics\Data\SummaryStatisticsData;
@@ -15,12 +15,12 @@ class CsvExporter implements APMExporter
 {
     private APMCsvStorage $storage;
 
-    private CsvRowCreator $csvRowCreator;
+    private CsvRowFactory $csvRowFactory;
 
-    public function __construct(APMCsvStorage $storage, CsvRowCreator $csvRowCreator)
+    public function __construct(APMCsvStorage $storage, CsvRowFactory $csvRowFactory)
     {
         $this->storage       = $storage;
-        $this->csvRowCreator = $csvRowCreator;
+        $this->csvRowFactory = $csvRowFactory;
     }
 
     /**
@@ -42,8 +42,8 @@ class CsvExporter implements APMExporter
         }
 
         $data .= $this
-            ->csvRowCreator
-            ->createFromStatisticsAndScriptInfo($statisticsData, $scriptInfo)
+            ->csvRowFactory
+            ->fromStatisticsAndScriptInfo($statisticsData, $scriptInfo)
             ->toRowString($separator);
 
         $this->storage->store($data);

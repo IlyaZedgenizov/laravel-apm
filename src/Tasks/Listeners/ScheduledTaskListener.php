@@ -6,18 +6,18 @@ use Illuminate\Console\Events\ScheduledTaskFinished;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
-use Napopravku\LaravelAPM\ScriptInfo\DataCreators\ScriptInfoCreator;
+use Napopravku\LaravelAPM\ScriptInfo\SimpleFactories\ScriptInfoFactory;
 
 class ScheduledTaskListener
 {
     private APMSnapshotCollector $snapshotCollector;
 
-    private ScriptInfoCreator $scriptInfoCreator;
+    private ScriptInfoFactory $scriptInfoFactory;
 
-    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoCreator $scriptInfoCreator)
+    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoFactory $scriptInfoFactory)
     {
         $this->snapshotCollector = $snapshotCollector;
-        $this->scriptInfoCreator = $scriptInfoCreator;
+        $this->scriptInfoFactory = $scriptInfoFactory;
     }
 
     public function handleStart(): void
@@ -29,7 +29,7 @@ class ScheduledTaskListener
     {
         $this->snapshotCollector->takeForSummary('stop');
 
-        $scriptInfo = $this->scriptInfoCreator->create($event->task->command, TaskTypes::SCHEDULED_TASK);
+        $scriptInfo = $this->scriptInfoFactory->create($event->task->command, TaskTypes::SCHEDULED_TASK);
 
         event(
             new SnapshottingFinished($this->snapshotCollector->getSnapshotsCollection(), $scriptInfo)

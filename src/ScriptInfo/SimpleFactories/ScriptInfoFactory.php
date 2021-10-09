@@ -1,10 +1,10 @@
 <?php
 
-namespace Napopravku\LaravelAPM\ScriptInfo\DataCreators;
+namespace Napopravku\LaravelAPM\ScriptInfo\SimpleFactories;
 
 use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 
-class ScriptInfoCreator
+class ScriptInfoFactory
 {
     /**
      * @param string $taskName

@@ -3,7 +3,7 @@
 namespace Napopravku\LaravelAPM\Tasks\Listeners;
 
 use Illuminate\Queue\Events\JobProcessed;
-use Napopravku\LaravelAPM\ScriptInfo\DataCreators\ScriptInfoCreator;
+use Napopravku\LaravelAPM\ScriptInfo\SimpleFactories\ScriptInfoFactory;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
@@ -12,12 +12,12 @@ class JobTaskListener
 {
     private APMSnapshotCollector $snapshotCollector;
 
-    private ScriptInfoCreator $scriptInfoCreator;
+    private ScriptInfoFactory $scriptInfoFactory;
 
-    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoCreator $scriptInfoCreator)
+    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoFactory $scriptInfoFactory)
     {
         $this->snapshotCollector = $snapshotCollector;
-        $this->scriptInfoCreator = $scriptInfoCreator;
+        $this->scriptInfoFactory = $scriptInfoFactory;
     }
 
     public function handleStart(): void
@@ -29,7 +29,7 @@ class JobTaskListener
     {
         $this->snapshotCollector->takeForSummary('stop');
 
-        $scriptInfo = $this->scriptInfoCreator->create($event->job->resolveName(), TaskTypes::JOB);
+        $scriptInfo = $this->scriptInfoFactory->create($event->job->resolveName(), TaskTypes::JOB);
 
         event(
             new SnapshottingFinished($this->snapshotCollector->getSnapshotsCollection(), $scriptInfo)

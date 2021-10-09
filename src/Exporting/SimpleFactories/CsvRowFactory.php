@@ -1,6 +1,6 @@
 <?php
 
-namespace Napopravku\LaravelAPM\Exporting\DataCreators;
+namespace Napopravku\LaravelAPM\Exporting\SimpleFactories;
 
 use Napopravku\LaravelAPM\Exporting\Data\CsvRow;
 use Napopravku\LaravelAPM\Formatting\DateFormatter;
@@ -10,9 +10,9 @@ use Napopravku\LaravelAPM\ScriptInfo\Data\ScriptInfo;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsData;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
-class CsvRowCreator
+class CsvRowFactory
 {
-    public function createFromStatisticsAndScriptInfo(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): CsvRow
+    public function fromStatisticsAndScriptInfo(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): CsvRow
     {
         $row = new CsvRow();
 

@@ -3,7 +3,7 @@
 namespace Napopravku\LaravelAPM\Tasks\Listeners;
 
 use Illuminate\Console\Events\CommandFinished;
-use Napopravku\LaravelAPM\ScriptInfo\DataCreators\ScriptInfoCreator;
+use Napopravku\LaravelAPM\ScriptInfo\SimpleFactories\ScriptInfoFactory;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
@@ -12,12 +12,12 @@ class CommandTaskListener
 {
     private APMSnapshotCollector $snapshotCollector;
 
-    private ScriptInfoCreator $scriptInfoCreator;
+    private ScriptInfoFactory $scriptInfoFactory;
 
-    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoCreator $scriptInfoCreator)
+    public function __construct(APMSnapshotCollector $snapshotCollector, ScriptInfoFactory $scriptInfoFactory)
     {
         $this->snapshotCollector = $snapshotCollector;
-        $this->scriptInfoCreator = $scriptInfoCreator;
+        $this->scriptInfoFactory = $scriptInfoFactory;
     }
 
     public function handleStart(): void
@@ -29,7 +29,7 @@ class CommandTaskListener
     {
         $this->snapshotCollector->takeForSummary('stop');
 
-        $scriptInfo = $this->scriptInfoCreator->create($event->command, TaskTypes::COMMAND);
+        $scriptInfo = $this->scriptInfoFactory->create($event->command, TaskTypes::COMMAND);
 
         event(
             new SnapshottingFinished($this->snapshotCollector->getSnapshotsCollection(), $scriptInfo)
