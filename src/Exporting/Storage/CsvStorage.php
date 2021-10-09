@@ -6,12 +6,13 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use LogicException;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
 use Napopravku\LaravelAPM\Exporting\Data\CsvStorageOptions;
 
 /**
  * Concurrent-safe storage
  */
-class CsvStorage
+class CsvStorage implements APMCsvStorage
 {
     private const DIR = 'apm/csv';
 
@@ -21,13 +22,10 @@ class CsvStorage
 
     private string $filePath;
 
-    public function __construct()
-    {
-        $this->disk = Storage::disk(config('apm.export.csv.disk'));
-    }
-
     public function initStorage(CsvStorageOptions $options): void
     {
+        $this->disk = Storage::disk(config('apm.export.csv.disk'));
+
         $today = Carbon::today()->format('Y-m-d');
 
         $filename = self::FILENAME;
@@ -52,9 +50,6 @@ class CsvStorage
         $this->disk->append($this->getFilePath(), $data);
     }
 
-    /**
-     * @return string
-     */
     public function getFilePath(): string
     {
         if (!$this->filePath) {

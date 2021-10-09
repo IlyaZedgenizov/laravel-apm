@@ -14,8 +14,10 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
+use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvStorage;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMExporter;
 use Napopravku\LaravelAPM\Exporting\Exporters\CsvExporter;
+use Napopravku\LaravelAPM\Exporting\Storage\CsvStorage;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Statistics\Collectors\SummaryStatisticsCollector;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
@@ -54,6 +56,10 @@ class APMServiceProvider extends ServiceProvider
 
         if(!$this->app->bound(APMExporter::class)) {
             $this->app->bind(APMExporter::class, CsvExporter::class);
+        }
+
+        if(!$this->app->bound(APMCsvStorage::class)) {
+            $this->app->bind(APMCsvStorage::class, CsvStorage::class);
         }
 
         $this->app->singleton(APMSnapshotCollector::class);
