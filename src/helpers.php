@@ -8,3 +8,15 @@ if (!function_exists('apm')) {
         return app(APMSnapshotCollector::class);
     }
 }
+
+if (!function_exists('getRelativeFilePath')) {
+    /**
+     * @param string[] $parts
+     *
+     * @return string
+     */
+    function getRelativeFilePath(array $parts): string
+    {
+        return implode(DIRECTORY_SEPARATOR, $parts);
+    }
+}

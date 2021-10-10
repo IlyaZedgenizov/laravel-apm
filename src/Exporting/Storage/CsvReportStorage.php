@@ -8,16 +8,13 @@ use Illuminate\Support\Facades\Storage;
 use LogicException;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
 use Napopravku\LaravelAPM\Exporting\Data\CsvReportStorageOptions;
+use Napopravku\LaravelAPM\Exporting\Helpers\CsvReportHelper;
 
 /**
  * Concurrent-safe storage
  */
 class CsvReportStorage implements APMCsvReportStorage
 {
-    private const DIR = 'apm/csv';
-
-    private const FILENAME = 'apm';
-
     private Filesystem $disk;
 
     private string $filePath;
@@ -28,16 +25,13 @@ class CsvReportStorage implements APMCsvReportStorage
 
         $today = Carbon::today()->format('Y-m-d');
 
-        $filename = self::FILENAME;
-        $dir      = self::DIR;
-
         if ($options->enableConcurrentSafety) {
-            $this->filePath = "$dir/$today/$options->pid/$filename.csv";
+            $this->filePath = CsvReportHelper::buildReportPartPath($today, $options->pid ?? 0);
 
             return;
         }
 
-        $this->filePath = "$dir/$today-$filename.csv";
+        $this->filePath = CsvReportHelper::buildReportPath($today);
     }
 
     public function exists(): bool

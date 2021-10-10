@@ -14,6 +14,8 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
+use Napopravku\LaravelAPM\Exporting\Commands\ClearOldCsvReports;
+use Napopravku\LaravelAPM\Exporting\Commands\MergeCsvReportPartsCommand;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMReportExporter;
 use Napopravku\LaravelAPM\Exporting\Exporters\CsvReportExporter;
@@ -48,8 +50,6 @@ class APMServiceProvider extends ServiceProvider
         /** @var Config $config */
         $config = $this->app->make('config');
 
-        $scriptTypesAvailable = $config->get('apm.tasks_available');
-
         if(!$this->app->bound(APMStatisticsCollector::class)) {
             $this->app->bind(APMStatisticsCollector::class, SummaryStatisticsCollector::class);
         }
@@ -62,9 +62,18 @@ class APMServiceProvider extends ServiceProvider
             $this->app->bind(APMCsvReportStorage::class, CsvReportStorage::class);
         }
 
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MergeCsvReportPartsCommand::class,
+                ClearOldCsvReports::class,
+            ]);
+        }
+
         $this->app->singleton(APMSnapshotCollector::class);
 
         $events->listen(SnapshottingFinished::class, [SnapshottingFinishedListener::class, 'handle']);
+
+        $scriptTypesAvailable = $config->get('apm.tasks_available');
 
         if ($scriptTypesAvailable[TaskTypes::JOB]) {
             $events->listen(JobProcessing::class, [JobTaskListener::class, 'handleStart']);

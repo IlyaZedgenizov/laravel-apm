@@ -48,4 +48,6 @@ return [
     ],
 
     'timezone' => env('APP_TIMEZONE', 'Europe/Moscow'),
+
+    'reports_ttl_days' => env('APM_REPORTS_TTL_DAYS', 7),
 ];
