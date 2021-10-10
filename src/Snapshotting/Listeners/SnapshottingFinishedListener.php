@@ -5,6 +5,7 @@ namespace Napopravku\LaravelAPM\Snapshotting\Listeners;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMReportExporter;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
+use Napopravku\LaravelAPM\Statistics\Events\StatisticsCollected;
 
 class SnapshottingFinishedListener
 {
@@ -22,8 +23,18 @@ class SnapshottingFinishedListener
 
     public function handle(SnapshottingFinished $event): void
     {
+        $scriptInfo = $event->getScriptInfo();
+
         $statisticsData = $this->statisticsCollector->collect($event->getSnapshotsCollection());
 
-        $this->exporter->export($statisticsData, $event->getScriptInfo());
+        event(
+            new StatisticsCollected($statisticsData, $scriptInfo)
+        );
+
+        /*
+         * Despite it depends on statistics data and could listen to StatisticsCollected event,
+         * it is default regular action, and the event is for some additional actions on collected stats
+         */
+        $this->exporter->export($statisticsData, $scriptInfo);
     }
 }

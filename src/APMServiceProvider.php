@@ -20,9 +20,11 @@ use Napopravku\LaravelAPM\Exporting\Contracts\APMCsvReportStorage;
 use Napopravku\LaravelAPM\Exporting\Contracts\APMReportExporter;
 use Napopravku\LaravelAPM\Exporting\Exporters\CsvReportExporter;
 use Napopravku\LaravelAPM\Exporting\Storage\CsvReportStorage;
+use Napopravku\LaravelAPM\Rendering\Listeners\RenderCommandStatistics;
 use Napopravku\LaravelAPM\Snapshotting\APMSnapshotCollector;
 use Napopravku\LaravelAPM\Statistics\Collectors\SummaryStatisticsCollector;
 use Napopravku\LaravelAPM\Statistics\Contracts\APMStatisticsCollector;
+use Napopravku\LaravelAPM\Statistics\Events\StatisticsCollected;
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 use Napopravku\LaravelAPM\Snapshotting\Events\SnapshottingFinished;
 use Napopravku\LaravelAPM\Snapshotting\Listeners\SnapshottingFinishedListener;
@@ -84,6 +86,10 @@ class APMServiceProvider extends ServiceProvider
         if ($scriptTypesAvailable[TaskTypes::COMMAND]) {
             $events->listen(CommandStarting::class, [CommandTaskListener::class, 'handleStart']);
             $events->listen(CommandFinished::class, [CommandTaskListener::class, 'handleStop']);
+
+            if ($config->get('apm.tasks_action_permissions.' . TaskTypes::COMMAND . '.render')) {
+                $events->listen(StatisticsCollected::class, [RenderCommandStatistics::class, 'handle']);
+            }
         }
 
         if ($scriptTypesAvailable[TaskTypes::SCHEDULED_TASK]) {

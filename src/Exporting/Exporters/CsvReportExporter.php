@@ -29,6 +29,10 @@ class CsvReportExporter implements APMReportExporter
      */
     public function export(APMStatisticsData $statisticsData, ScriptInfo $scriptInfo): void
     {
+        if (!$this->shouldExport($scriptInfo)) {
+            return;
+        }
+
         $this->storage->initStorage(
             CsvReportStorageOptions::create($scriptInfo->pid, config('apm.enable_concurrent_safety'))
         );
@@ -52,5 +56,10 @@ class CsvReportExporter implements APMReportExporter
     protected function shouldStoreHeader(): bool
     {
         return config('apm.export.csv.include_header') && !$this->storage->exists();
+    }
+
+    protected function shouldExport(ScriptInfo $scriptInfo): bool
+    {
+        return config("apm.tasks_action_permissions.$scriptInfo->taskType.export", true);
     }
 }
