@@ -43,9 +43,9 @@ class CommandSummaryRenderer
         $peakMemory = MemoryFormatter::format($statisticsData->peakMemory);
 
         $this->output->writeln(
-            "\n<fg=white;bg=green>APM:</> Script executed."
-            . "Duration: <bg=$durationColor;options=bold>$duration</>, "
-            . "peak memory: <bg=$peakMemColor;options=bold>$peakMemory</>"
+            "\n<bg=green;options=bold>APM:</> Script executed. "
+            . "Duration: <fg=$durationColor;options=bold>$duration</>, "
+            . "peak memory: <fg=$peakMemColor;options=bold>$peakMemory</>"
         );
     }
 }

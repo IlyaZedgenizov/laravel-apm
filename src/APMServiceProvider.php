@@ -46,12 +46,16 @@ class APMServiceProvider extends ServiceProvider
         $config_path = __DIR__ . '/../config/apm.php';
         $this->mergeConfigFrom($config_path, 'apm');
 
-        /** @var Dispatcher $events */
-        $events = $this->app->make('events');
-
         /** @var Config $config */
         $config = $this->app->make('config');
 
+        if (!$config->get('apm.enable')) {
+            return;
+        }
+
+        /*
+         * Register re-definable interfaces
+         */
         if(!$this->app->bound(APMStatisticsCollector::class)) {
             $this->app->bind(APMStatisticsCollector::class, SummaryStatisticsCollector::class);
         }
@@ -65,13 +69,26 @@ class APMServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            /*
+             * Register commands
+             */
             $this->commands([
                 MergeCsvReportPartsCommand::class,
                 ClearOldCsvReports::class,
             ]);
         }
 
+        /*
+         * Register snapshots storage manager
+         */
         $this->app->singleton(APMSnapshotCollector::class);
+
+        /*
+         * Register listeners
+         */
+
+        /** @var Dispatcher $events */
+        $events = $this->app->make('events');
 
         $events->listen(SnapshottingFinished::class, [SnapshottingFinishedListener::class, 'handle']);
 

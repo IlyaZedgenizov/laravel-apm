@@ -35,18 +35,14 @@ class ClearOldCsvReports extends Command
 
         $minDate = Carbon::today()->subDays(config('apm.reports_ttl_days'));
 
-        $this->output->info('Clearing old reports...');
+        $this->output->text('Clearing old reports...');
 
         $deletedCount = 0;
 
         foreach ($reports as $report) {
             $dateStr = Arr::first(
-                explode(CsvReportHelper::DATE_FILENAME_SEPARATOR, $report)
+                explode('.', basename($report))
             );
-
-            if (!$dateStr) {
-                continue;
-            }
 
             try {
                 $date = Carbon::parse($dateStr);

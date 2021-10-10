@@ -23,7 +23,7 @@ class CsvReportStorage implements APMCsvReportStorage
     {
         $this->disk = Storage::disk(config('apm.export.csv.disk'));
 
-        $today = Carbon::today()->format('Y-m-d');
+        $today = Carbon::today()->format(CsvReportHelper::FILENAME_DATE_FORMAT);
 
         if ($options->enableConcurrentSafety) {
             $this->filePath = CsvReportHelper::buildReportPartPath($today, $options->pid ?? 0);

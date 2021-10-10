@@ -3,11 +3,13 @@
 use Napopravku\LaravelAPM\Tasks\Enums\TaskTypes;
 
 return [
+    'enable' => env('APM_ENABLE', false),
+
     /*
      * If you have your app running in multiple processes,
      * apm needs to handle concurrent storage access when saving metrics
      */
-    'enable_concurrent_safety' => env('APM_ENABLE_CONCURRENT_SAFETY', true),
+    'enable_concurrent_safety' => env('APM_CONCURRENT_SAFETY_ENABLE', false),
 
     /*
      * Snapshotting availability for tasks. Prod configuration. Locally, turn off scheduler and turn on commands
@@ -28,7 +30,7 @@ return [
              * Echo brief summary after every artisan command. By default, disabled on production
              */
             'render' => env(
-                'APM_COMMANDS_RENDER',
+                'APM_COMMANDS_RENDER_ENABLE',
                 env('APP_ENV', 'production') !== 'production'
             ),
 
@@ -36,7 +38,7 @@ return [
              * If value above is enabled, u probably don't want to trash your disk space by unnecessary command reports
              */
             'export' => env(
-                'APM_COMMANDS_EXPORT',
+                'APM_COMMANDS_EXPORT_ENABLE',
                 env('APP_ENV', 'production') === 'production'
             ),
         ],
@@ -66,7 +68,7 @@ return [
              */
             'include_header' => env(
                 'APM_CSV_INCLUDE_HEADER',
-                !env('APM_ENABLE_CONCURRENT_SAFETY', true)
+                !env('APM_CONCURRENT_SAFETY_ENABLE', false)
             ),
         ],
     ],

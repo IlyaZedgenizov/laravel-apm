@@ -18,7 +18,7 @@ class MergeCsvReportPartsCommand extends Command
      *
      * @var string
      */
-    protected $signature = self::SIGNATURE . ' {--clear-more-than=7 : How much date-dirs with report parts to keep, the rest will be cleared}';
+    protected $signature = self::SIGNATURE . ' {--clear-more-than=3 : How much date-dirs with report parts to keep, the rest will be cleared}';
 
     /**
      * The console command description.
@@ -29,17 +29,17 @@ class MergeCsvReportPartsCommand extends Command
 
     public function handle(): void
     {
-        $this->output->info('Collecting dates...');
+        $this->output->text('Collecting dates...');
 
         $disk = Storage::disk(config('apm.export.csv.disk'));
 
         $dates = $this->getSortedDates($disk);
 
-        $this->output->info('Removing old date-dirs with report parts...');
+        $this->output->text('Removing old date-dirs with report parts...');
 
         $dates = $this->getActualDates($disk, $dates);
 
-        $this->output->info('Merging parts...');
+        $this->output->text('Merging parts...');
 
         $partsCount = 0;
 
@@ -60,7 +60,7 @@ class MergeCsvReportPartsCommand extends Command
 
             $partsCount += count($filesToMerge);
 
-            $this->output->info("$date processed!");
+            $this->output->text("$date processed!");
         }
 
         $this->output->info("Finished. Successfully processed $partsCount parts");
@@ -82,7 +82,11 @@ class MergeCsvReportPartsCommand extends Command
 
     private function getActualDates(Filesystem $disk, array $dates): array
     {
-        $reportsToKeepAmount = $this->option('clear-more-than');
+        $reportsToKeepAmount = (int)$this->option('clear-more-than');
+
+        if ($reportsToKeepAmount < 1) {
+            $reportsToKeepAmount = 1;
+        }
 
         $expiredDates = array_slice($dates, $reportsToKeepAmount);
 
@@ -97,9 +101,9 @@ class MergeCsvReportPartsCommand extends Command
 
     private function createReport(Filesystem $disk, string $resultFilePath): void
     {
-        $newFileContents = CsvReportRow::getHeaderRowString() . PHP_EOL;
-
-        $disk->put($resultFilePath, $newFileContents);
+        if (!$disk->exists($resultFilePath)) {
+            $disk->put($resultFilePath, CsvReportRow::getHeaderRowString());
+        }
     }
 
     private function mergeParts(Filesystem $disk, array $filesToMerge, string $resultFilePath): void
