@@ -32,7 +32,7 @@ use Napopravku\LaravelAPM\Tasks\Listeners\CommandTaskListener;
 use Napopravku\LaravelAPM\Tasks\Listeners\JobTaskListener;
 use Napopravku\LaravelAPM\Tasks\Listeners\ScheduledTaskListener;
 
-class APMServiceProvider extends ServiceProvider
+class ApmServiceProvider extends ServiceProvider
 {
     public function boot()
     {
